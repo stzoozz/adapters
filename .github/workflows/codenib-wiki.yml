@@ -1,0 +1,34 @@
+name: CodeNib Wiki
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: codenib-pages
+  cancel-in-progress: true
+
+jobs:
+  wiki:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: github-pages
+      url: ${{ steps.wiki.outputs.page-url }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Build and publish repository Wiki
+        id: wiki
+        uses: sysevol-ai/wiki-action@b7992517568bf04c5188c9205888fc08fa842f1b # v1.0.4
+        with:
+          wiki: index
+          graph: "false"
